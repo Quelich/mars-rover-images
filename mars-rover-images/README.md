@@ -1,5 +1,6 @@
 # mars-rover-images
 This is a simple API that returns images from NASA's Mars Rover.
+started server on 0.0.0.0:3000, url: http://localhost:3000
 # Definitions
 - FHAZ = Front Hazard Avoidance Camera
 - RHAZ = Rear Hazard Avoidance Camera	
