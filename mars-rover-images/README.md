@@ -1,6 +1,11 @@
 # mars-rover-images
 This is a simple API that returns images from NASA's Mars Rover.
 
+<figure>
+<img src="https://github.com/Quelich/mars-rover-images/blob/main/images/overview_0.png?raw=true" width="960" height="480">
+  <figcaption>Some of Early images of Curiosity Rover</figcaption>
+</figure>
+
 # Usage
 
 Run the following command to start the server:
