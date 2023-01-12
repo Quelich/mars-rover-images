@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# mars-rover-images
+This is a simple API that returns images from NASA's Mars Rover.
+# Definitions
+- FHAZ = Front Hazard Avoidance Camera
+- RHAZ = Rear Hazard Avoidance Camera	
+- MAST = Mast Camera
+- CHEMCAM = Chemistry and Camera Complex	
+- MAHLI = Mars Hand Lens Imager
+- MARDI = Mars Descent Imager
+- NAVCAM = Navigation Camera
+- PANCAM = Panoramic Camera
+- MINITES = Miniature Thermal Emission Spectrometer (Mini-TES)
+# Rover Cameras
+## Curiosity
+- `Properties`: FHAZ, RHAZ, MAST, CHEMCAM, MAHLI, MARDI, NAVCAM
+## Opportunity
+- `Properties`: FHAZ, RHAZ, NAVCAM, PANCAM, MINITES
+## Spirit
+- `Properties`: FHAZ, RHAZ, NAVCAM, PANCAM, MINITES
+# API
+## Request Parameters
+- sol: `int` = Solar Day (ranges from 0 to max found in endpoint)
+- camera: `string`
+- page: `int` = 25 items per page returned
+- api_key: `string`
 
-## Getting Started
+## Response Parameters
+- name = name of the rover
+- landing_date = The Rover's landing date on Mars
+- launch_date = The Rover's launch date from Earth
+- status = The Rover's mission status
+- max_sol = The most recent Martian sol from which photos exist
+- max_date = The most recent Earth date from which photos exist
+- total_photos = Number of photos taken by that Rover
+## Example Queries
+https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=DEMO_KEY
 
-First, run the development server:
+https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&camera=fhaz&api_key=DEMO_KEY
 
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&page=2&api_key=DEMO_KEY
