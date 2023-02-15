@@ -32,10 +32,18 @@ export default function Home({ initialRoverData }) {
     });
     const result = await res.json();
     //todo solve api limit issue
-    setSolArrayLength(result.data.photos.length);
-    setIsLoading(false);
-    console.log(result);
-    setLoadedRoverData(result.data.photos);
+    if (result.message == "Success") {
+      console.log(result);
+      setSolArrayLength(result.data.photos.length);
+      setIsLoading(false);
+      setLoadedRoverData(result.data.photos);
+    }
+    else if(result.message == "API limit reached"){
+      console.log("API limit reached");
+    }
+    else if(result.message == "Error"){
+      console.log("Error");
+    }
   };
 
   return (
