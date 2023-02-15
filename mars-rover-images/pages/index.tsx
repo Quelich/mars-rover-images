@@ -1,47 +1,37 @@
 import Head from "next/head";
-import * as React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Text,
   Card,
   Col,
   Navbar,
-  createTheme,
-  NextUIProvider,
   Input,
   Dropdown,
-  Avatar,
+  Button,
 } from "@nextui-org/react";
 import { GetServerSideProps } from "next";
-import { SearchIcon } from "../components/SearchIcon";
 
-const NASA_API_KEY = process.env.NASA_API_KEY;
-const NASA_API_URL = "https://api.nasa.gov/mars-photos/api/v1";
-let solarDay: number = 0;
+export default function Home() {
+  const [selectedSolarDay, setSolarDay] = useState("0");
+  const [loadedRoverData, setLoadedRoverData] = useState([]);
 
-interface HomePageProps {
-  photos: {
-    id: number;
-    sol: number;
-    camera: {
-      id: number;
-      name: string;
-      rover_id: number;
-      full_name: string;
-    };
-    img_src: string;
-    earth_date: string;
-    rover: {
-      id: number;
-      name: string;
-      landing_date: string;
-      launch_date: string;
-      status: string;
-    };
-  }[];
-}
+ 
+  const submitParams = async () => {
+    const res = await fetch("/api/rover-photos", {
+      method: "POST",
+      body: JSON.stringify({
+        sol: selectedSolarDay,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await res.json();
+    //console.log(result.data.photos);
+    setLoadedRoverData(result.data.photos);
+  };
 
-export default function Home({ data }: HomePageProps) {
   return (
     <>
       <Head>
@@ -52,7 +42,7 @@ export default function Home({ data }: HomePageProps) {
       </Head>
       <Navbar isBordered variant="floating">
         <Navbar.Brand css={{ mr: "$4" }}>
-          <Text b color="inherit" css={{ mr: "$11" }} hideIn="xs">
+          <Text h3 b color="inherit" css={{ mr: "$14" }} hideIn="xs">
             Mars Rover Photos
           </Text>
           <Navbar.Content
@@ -83,33 +73,42 @@ export default function Home({ data }: HomePageProps) {
             }}
           >
             <Input
-              clearable
-              contentLeft={
-                <SearchIcon fill="var(--nextui-colors-accents6)" size={16} />
-              }
-              contentLeftStyling={false}
-              css={{
-                w: "100%",
-                "@xsMax": {
-                  mw: "300px",
-                },
-                "& .nextui-input-content--left": {
-                  h: "100%",
-                  ml: "$4",
-                  dflex: "center",
-                },
+              size="md"
+              labelPlaceholder="Solar Day" //todo limit max solar day
+              type="number"
+              onChange={async (e) => {
+                var inputSolarDay = e.target.value;
+                setSolarDay(inputSolarDay);
               }}
-              placeholder="Search..."
-            />
+            ></Input>
+          </Navbar.Item>
+          <Navbar.Item
+            css={{
+              "@xsMax": {
+                w: "100%",
+                jc: "center",
+              },
+            }}
+          >
+            <Button
+              type="submit"
+              auto
+              size="md"
+              onPress={(e) => {
+                submitParams();
+              }}
+            >
+              Search
+            </Button>
           </Navbar.Item>
         </Navbar.Content>
       </Navbar>
 
       <Grid.Container gap={2} justify="center">
-        {data.photos.map(({ id, sol, img_src, camera, rover, earth_date }) => {
+        {loadedRoverData.map((photo) => {
           return (
-            <Grid key={id} xs={12} sm={4}>
-              <Card>
+            <Grid key={photo.id} xs={12} sm={4}>
+              <Card isPressable>
                 <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
                   <Col>
                     <Text
@@ -118,15 +117,15 @@ export default function Home({ data }: HomePageProps) {
                       transform="uppercase"
                       color="#ffffffAA"
                     >
-                      {rover.name}
+                      {photo.rover.name}
                     </Text>
                     <Text h4 color="white">
-                      Date: {earth_date}
+                      Date: {photo.earth_date}
                     </Text>
                   </Col>
                 </Card.Header>
                 <Card.Image
-                  src={img_src}
+                  src={photo.img_src}
                   objectFit="cover"
                   width="100%"
                   height={400}
@@ -141,19 +140,19 @@ export default function Home({ data }: HomePageProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const category = "rovers";
-  const rover = "curiosity";
-  const solarDay = 0;
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const NASA_API_KEY = process.env.NASA_API_KEY;
+//   const NASA_API_URL = "https://api.nasa.gov/mars-photos/api/v1";
+//   const rover = "curiosity";
+//   const solarDay = 1000;
 
-  const res = await fetch(
-    `${NASA_API_URL}/${category}/${rover}/photos?sol=${solarDay}&api_key=${NASA_API_KEY}`
-  , );
+//   const res = await fetch(
+//     `${NASA_API_URL}/rovers/${rover}/photos?sol=${solarDay}&api_key=${NASA_API_KEY}`
+//   );
 
-  const data = await res.json();
-  //console.log(data);
+//   const data = await res.json();
 
-  return {
-    props: { data }, // will be passed to the page component as props
-  };
-};
+//   return {
+//     props: { data }, // will be passed to the page component as props
+//   };
+// };
