@@ -11,8 +11,58 @@ import {
   Button,
   Loading,
   Container,
+  Checkbox,
 } from "@nextui-org/react";
-import { GetServerSideProps } from "next";
+
+const filtersMenuItems = [
+  {
+    id: "rovers",
+    name: "Rovers",
+    options: [
+      {
+        id: "curiosity",
+        name: "Curiosity",
+        cameras: [
+          { id: "FHAZ", desc: "Front Hazard Avoidance Camera" },
+          { id: "RHAZ", desc: "Rear Hazard Avoidance Camera" },
+          { id: "MAST", desc: "Mast Camera" },
+          { id: "CHEMCAM", desc: "Front Hazard Avoidance Camera" },
+          { id: "MAHLI", desc: "Mars Hand Lens Imager" },
+          { id: "MARDI", desc: "Mars Descent Imager" },
+          { id: "NAVCAM", desc: "Navigation Camera" },
+        ],
+      },
+      {
+        id: "opportunity",
+        name: "Opportunity",
+        cameras: [
+          { id: "FHAZ", desc: "Front Hazard Avoidance Camera" },
+          { id: "RHAZ", desc: "Rear Hazard Avoidance Camera" },
+          { id: "NAVCAM", desc: "Navigation Camera" },
+          { id: "PANCAM", desc: "Panoramic Camera" },
+          {
+            id: "MINITES",
+            desc: "Miniature Thermal Emission Spectrometer (Mini-TES)",
+          },
+        ],
+      },
+      {
+        id: "spirit",
+        name: "Spirit",
+        cameras: [
+          { id: "FHAZ", desc: "Front Hazard Avoidance Camera" },
+          { id: "RHAZ", desc: "Rear Hazard Avoidance Camera" },
+          { id: "NAVCAM", desc: "Navigation Camera" },
+          { id: "PANCAM", desc: "Panoramic Camera" },
+          {
+            id: "MINITES",
+            desc: "Miniature Thermal Emission Spectrometer (Mini-TES)",
+          },
+        ],
+      },
+    ],
+  },
+];
 
 export default function Home({ initialRoverData }) {
   const [selectedSolarDay, setSolarDay] = useState("0");
@@ -37,11 +87,9 @@ export default function Home({ initialRoverData }) {
       setSolArrayLength(result.data.photos.length);
       setIsLoading(false);
       setLoadedRoverData(result.data.photos);
-    }
-    else if(result.message == "API limit reached"){
+    } else if (result.message == "API limit reached") {
       console.log("API limit reached");
-    }
-    else if(result.message == "Error"){
+    } else if (result.message == "Error") {
       console.log("Error");
     }
   };
@@ -78,6 +126,34 @@ export default function Home({ initialRoverData }) {
             },
           }}
         >
+          <Dropdown isBordered>
+            <Navbar.Item
+              css={{
+                "@xsMax": {
+                  w: "100%",
+                  jc: "center",
+                },
+              }}
+            >
+              <Dropdown.Button
+                auto
+                light
+                css={{
+                  px: 0,
+                  dflex: "center",
+                  svg: { pe: "none" },
+                }}
+                ripple={false}
+              >
+                Filters
+              </Dropdown.Button>
+            </Navbar.Item>
+            <Dropdown.Menu>
+              {filtersMenuItems[0].options.map((item) => (
+                <Dropdown.Item key={item.id}>{item.name}</Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
           <Navbar.Item
             css={{
               "@xsMax": {
