@@ -1,5 +1,5 @@
-import Head from "next/head";
 import React, { useState } from "react";
+import filtersMenuItems from "../data/filters";
 import {
   Grid,
   Text,
@@ -13,58 +13,9 @@ import {
   Container,
   Checkbox,
 } from "@nextui-org/react";
+import RoverPhotosGrid from "../components/rover-photos/RoverPhotosGrid";
 
-const filtersMenuItems = [
-  {
-    id: "rovers",
-    name: "Rovers",
-    options: [
-      {
-        id: "curiosity",
-        name: "Curiosity",
-        cameras: [
-          { id: "FHAZ", desc: "Front Hazard Avoidance Camera" },
-          { id: "RHAZ", desc: "Rear Hazard Avoidance Camera" },
-          { id: "MAST", desc: "Mast Camera" },
-          { id: "CHEMCAM", desc: "Front Hazard Avoidance Camera" },
-          { id: "MAHLI", desc: "Mars Hand Lens Imager" },
-          { id: "MARDI", desc: "Mars Descent Imager" },
-          { id: "NAVCAM", desc: "Navigation Camera" },
-        ],
-      },
-      {
-        id: "opportunity",
-        name: "Opportunity",
-        cameras: [
-          { id: "FHAZ", desc: "Front Hazard Avoidance Camera" },
-          { id: "RHAZ", desc: "Rear Hazard Avoidance Camera" },
-          { id: "NAVCAM", desc: "Navigation Camera" },
-          { id: "PANCAM", desc: "Panoramic Camera" },
-          {
-            id: "MINITES",
-            desc: "Miniature Thermal Emission Spectrometer (Mini-TES)",
-          },
-        ],
-      },
-      {
-        id: "spirit",
-        name: "Spirit",
-        cameras: [
-          { id: "FHAZ", desc: "Front Hazard Avoidance Camera" },
-          { id: "RHAZ", desc: "Rear Hazard Avoidance Camera" },
-          { id: "NAVCAM", desc: "Navigation Camera" },
-          { id: "PANCAM", desc: "Panoramic Camera" },
-          {
-            id: "MINITES",
-            desc: "Miniature Thermal Emission Spectrometer (Mini-TES)",
-          },
-        ],
-      },
-    ],
-  },
-];
-
-export default function Home({ initialRoverData }) {
+export default function Home({ initialRoverData }: any) {
   const [selectedSolarDay, setSolarDay] = useState("0");
   const [solArrayLength, setSolArrayLength] = useState(0);
   const [loadedRoverData, setLoadedRoverData] = useState([initialRoverData]);
@@ -96,12 +47,6 @@ export default function Home({ initialRoverData }) {
 
   return (
     <>
-      <Head>
-        <title>Mars Rover Photos</title>
-        <meta name="description" content="Nasa Mars Rover Photos" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <Navbar isBordered variant="floating">
         <Navbar.Brand css={{ mr: "$4" }}>
           <Text h3 b color="inherit" css={{ mr: "$14" }} hideIn="xs">
@@ -112,9 +57,7 @@ export default function Home({ initialRoverData }) {
             variant="highlight"
             activeColor={"primary"}
           >
-            <Navbar.Link isActive href="/">
-              Home
-            </Navbar.Link>
+            <Navbar.Link href="/">Home</Navbar.Link>
             <Navbar.Link href="/about">About</Navbar.Link>
           </Navbar.Content>
         </Navbar.Brand>
@@ -181,6 +124,7 @@ export default function Home({ initialRoverData }) {
             }}
           >
             <Button
+              color={"primary"}
               type="submit"
               auto
               size="md"
@@ -199,59 +143,15 @@ export default function Home({ initialRoverData }) {
         </Navbar.Content>
       </Navbar>
 
-      <Grid.Container gap={2} justify="center">
-        {solArrayLength == 0 ? (
-          <div>
-            <Container>
-              <Text h3>Whoops, could not found any Mars Rover photos</Text>
-              <Text h4>Enter a solar day to search for solar days</Text>
-            </Container>
-          </div>
-        ) : (
-          loadedRoverData.map((photo) => {
-            return (
-              <Grid key={photo.id} xs={12} sm={4}>
-                <Card
-                  isPressable
-                  onPress={(e) => {
-                    console.log();
-                  }}
-                >
-                  <Card.Header
-                    css={{ position: "absolute", zIndex: 1, top: 5 }}
-                  >
-                    <Col>
-                      <Text
-                        size={16}
-                        weight="bold"
-                        transform="uppercase"
-                        color="#ffffffAA"
-                      >
-                        {photo.rover.name}
-                      </Text>
-                      <Text h4 color="white">
-                        Date: {photo.earth_date}
-                      </Text>
-                    </Col>
-                  </Card.Header>
-                  <Card.Image
-                    src={photo.img_src}
-                    objectFit="cover"
-                    width="100%"
-                    height={400}
-                    alt="rover image"
-                  />
-                </Card>
-              </Grid>
-            );
-          })
-        )}
-      </Grid.Container>
+      <RoverPhotosGrid
+        solArrayLength={solArrayLength}
+        loadedRoverData={loadedRoverData}
+      />
     </>
   );
 }
 
-Home.getInitialProps = async (ctx) => {
+Home.getInitialProps = async (ctx: any) => {
   const NASA_API_KEY = process.env.NASA_API_KEY;
   const NASA_API_URL = "https://api.nasa.gov/mars-photos/api/v1";
   const rover = "curiosity";
