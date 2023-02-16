@@ -1,18 +1,16 @@
+import React, { useState } from "react";
 import {
   Grid,
   Text,
   Card,
   Col,
-  Navbar,
-  Input,
-  Dropdown,
-  Button,
-  Loading,
   Container,
-  Checkbox,
+  Button,
+  Popover,
+  Row,
 } from "@nextui-org/react";
 
-function RoverPhotosGrid({solArrayLength, loadedRoverData}: any) {
+function RoverPhotosGrid({ solArrayLength, loadedRoverData }: any) {
   return (
     <>
       <Grid.Container gap={2} justify="center">
@@ -26,30 +24,11 @@ function RoverPhotosGrid({solArrayLength, loadedRoverData}: any) {
         ) : (
           loadedRoverData.map((photo: any) => {
             return (
-              <Grid key={photo.id} xs={12} sm={4}>
-                <Card
-                  isPressable
-                  onPress={(e) => {
-                    console.log();
-                  }}
-                >
+              <Grid key={photo.id} md={3} xs={6} sm={4}>
+                <Card isPressable isHoverable>
                   <Card.Header
                     css={{ position: "absolute", zIndex: 1, top: 5 }}
-                  >
-                    <Col>
-                      <Text
-                        size={16}
-                        weight="bold"
-                        transform="uppercase"
-                        color="#ffffffAA"
-                      >
-                        {photo.rover.name}
-                      </Text>
-                      <Text h4 color="white">
-                        Date: {photo.earth_date}
-                      </Text>
-                    </Col>
-                  </Card.Header>
+                  ></Card.Header>
                   <Card.Image
                     src={photo.img_src}
                     objectFit="cover"
@@ -57,6 +36,39 @@ function RoverPhotosGrid({solArrayLength, loadedRoverData}: any) {
                     height={400}
                     alt="rover image"
                   />
+                  <Card.Footer
+                    isBlurred
+                    css={{
+                      position: "absolute",
+                      bgBlur: "primarySolidContrast",
+                      borderTop:
+                        "$borderWeights$light solid rgba(255, 255, 255, 0.2)",
+                      bottom: 0,
+                      zIndex: 1,
+                    }}
+                  >
+                    <Row>
+                      <Col>
+                        <Row>
+                          <Text b color="secondary" size={14}>
+                            Rover:
+                          </Text>
+                          <Text b color="" size={14}>
+                            {photo.rover.name}
+                          </Text>
+                        </Row>
+
+                        <Row>
+                          <Text b color="secondary" size={14}>
+                            Earth Date:
+                          </Text>
+                          <Text b color="" size={14}>
+                            {photo.earth_date}
+                          </Text>
+                        </Row>
+                      </Col>
+                    </Row>
+                  </Card.Footer>
                 </Card>
               </Grid>
             );
