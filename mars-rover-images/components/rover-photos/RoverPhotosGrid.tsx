@@ -51,8 +51,9 @@ function RoverPhotosGrid({ solArrayLength, loadedRoverData }: any) {
                       <Col>
                         <Row>
                           <Text b color="secondary" size={14}>
-                            Rover:
+                            Rover: 
                           </Text>
+                          
                           <Text b color="" size={14}>
                             {photo.rover.name}
                           </Text>

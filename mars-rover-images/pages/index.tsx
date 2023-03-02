@@ -15,11 +15,41 @@ import {
 } from "@nextui-org/react";
 import RoverPhotosGrid from "../components/rover-photos/RoverPhotosGrid";
 
-export default function Home({ initialRoverData }: any) {
+interface Props {
+  initialRoverData: any;
+}
+
+export default function Home() {
   const [selectedSolarDay, setSolarDay] = useState("0");
   const [solArrayLength, setSolArrayLength] = useState(0);
-  const [loadedRoverData, setLoadedRoverData] = useState([initialRoverData]);
+  const [loadedRoverData, setLoadedRoverData] = useState([]);
+  const [initialRoverData, setInitialRoverData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  const fetchInitialData = async () => {
+    const res = await fetch("/api/rover-photos", {
+      method: "POST",
+      body: JSON.stringify({
+        sol: "2000",
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      next: { revalidate: 60 },
+    });
+    const result = await res.json();
+    if (result.message == "Success") {
+      console.log(result);
+      setSolArrayLength(result.data.photos.length);
+      setInitialRoverData(result.data.photos);
+    } else if (result.message == "API limit reached") {
+      console.log("API limit reached");
+    } else if (result.message == "Error") {
+      console.log("Error");
+    }
+  };
+
   const submitParams = async () => {
     const res = await fetch("/api/rover-photos", {
       method: "POST",
@@ -44,6 +74,10 @@ export default function Home({ initialRoverData }: any) {
       console.log("Error");
     }
   };
+
+  if (isFirstLoad) {
+    fetchInitialData();
+  }
 
   return (
     <>
@@ -131,6 +165,7 @@ export default function Home({ initialRoverData }: any) {
               onPress={(e) => {
                 submitParams();
                 setIsLoading(true);
+                setIsFirstLoad(false);
               }}
             >
               {isLoading ? (
@@ -145,22 +180,10 @@ export default function Home({ initialRoverData }: any) {
 
       <RoverPhotosGrid
         solArrayLength={solArrayLength}
-        loadedRoverData={loadedRoverData}
+        loadedRoverData={
+          isFirstLoad == true ? initialRoverData : loadedRoverData
+        }
       />
     </>
   );
 }
-
-Home.getInitialProps = async (ctx: any) => {
-  const NASA_API_KEY = process.env.NASA_API_KEY;
-  const NASA_API_URL = "https://api.nasa.gov/mars-photos/api/v1";
-  const rover = "curiosity";
-  const sol = "0";
-  const loadedData = await fetch(
-    `${NASA_API_URL}/rovers/${rover}/photos?sol=${sol}&api_key=${NASA_API_KEY}`
-  );
-  const initialRoverData = await loadedData.json();
-  return {
-    initialRoverData: initialRoverData.photos,
-  };
-};
