@@ -15,10 +15,6 @@ import {
 } from "@nextui-org/react";
 import RoverPhotosGrid from "../components/rover-photos/RoverPhotosGrid";
 
-interface Props {
-  initialRoverData: any;
-}
-
 export default function Home() {
   const [selectedSolarDay, setSolarDay] = useState("0");
   const [solArrayLength, setSolArrayLength] = useState(0);
